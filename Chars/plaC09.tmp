@@ -1,0 +1,60 @@
+[gd_scene load_steps=6 format=3 uid="uid://c4tj3ps6i8l3w"]
+
+[ext_resource type="Script" path="res://scripts/player.gd" id="1_4efss"]
+[ext_resource type="Script" path="res://scripts/input.gd" id="2_demjr"]
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_spxc6"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_8off7"]
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_0rr2k"]
+
+[node name="Player" type="CharacterBody3D"]
+script = ExtResource("1_4efss")
+jumpForce = 170.0
+gravity = -20.0
+speed = 500.0
+lookPanSpeed = -1.0
+lookTiltSpeed = -1.0
+health = 100.0
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+unique_name_in_owner = true
+replication_config = SubResource("SceneReplicationConfig_spxc6")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+shape = SubResource("CapsuleShape3D_8off7")
+
+[node name="InputSynchronizer" type="MultiplayerSynchronizer" parent="."]
+unique_name_in_owner = true
+root_path = NodePath(".")
+replication_config = SubResource("SceneReplicationConfig_0rr2k")
+script = ExtResource("2_demjr")
+motion = null
+jump = null
+attack = null
+strongAttack = null
+interact = null
+scroll = null
+zoom = null
+
+[node name="FloorRayCast" type="RayCast3D" parent="."]
+unique_name_in_owner = true
+target_position = Vector3(0, -0.01, 0)
+
+[node name="PlayerModel" type="Node3D" parent="."]
+unique_name_in_owner = true
+
+[node name="HeadTilt" type="Node3D" parent="."]
+unique_name_in_owner = true
+
+[node name="Camera3D" type="Camera3D" parent="HeadTilt"]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
+
+[node name="OmniLight3D" type="OmniLight3D" parent="."]
+light_color = Color(0.768627, 1, 0.894118, 1)
+distance_fade_enabled = true
+omni_range = 30.0
+omni_attenuation = 0.8

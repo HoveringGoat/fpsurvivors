@@ -1,0 +1,7 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://d3jqh4f5k2pmv"]
+
+[ext_resource type="Shader" uid="uid://8tu14r66qk4d" path="res://shaders/dungeonFloorShader.tres" id="1_a3di7"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_a3di7")

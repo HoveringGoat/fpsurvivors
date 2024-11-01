@@ -1,0 +1,45 @@
+[gd_scene load_steps=8 format=3 uid="uid://chpv2hhnjw8gp"]
+
+[ext_resource type="Material" uid="uid://d3jqh4f5k2pmv" path="res://shaders/dungeonFloorMaterial.tres" id="1_u4026"]
+[ext_resource type="PackedScene" uid="uid://b3yxrxhh7hmyf" path="res://managers/spawnManager.tscn" id="2_q5ld1"]
+[ext_resource type="Shader" uid="uid://8tu14r66qk4d" path="res://shaders/dungeonFloorShader.tres" id="3_rmxs6"]
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_1urrr"]
+material = ExtResource("1_u4026")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_qv1ru"]
+render_priority = 0
+shader = ExtResource("3_rmxs6")
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_8oj7v"]
+material = SubResource("ShaderMaterial_qv1ru")
+
+[sub_resource type="Environment" id="Environment_5trxg"]
+background_energy_multiplier = 0.15
+ambient_light_energy = 0.1
+fog_enabled = true
+fog_light_color = Color(0, 0, 0, 1)
+volumetric_fog_enabled = true
+
+[node name="World 1" type="Node"]
+
+[node name="ground" type="MeshInstance3D" parent="."]
+transform = Transform3D(100, 0.0232594, 0.060145, -0.0232612, 100, 0.00342791, -0.0601443, -0.00343991, 100, 0, 0, 0)
+mesh = SubResource("PlaneMesh_1urrr")
+skeleton = NodePath("../..")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.731813, 0.56136, 0.386425, 0.0902009, -0.641812, 0.761538, 0.67551, -0.522448, -0.520322, 0, 88.4816, 0)
+light_energy = 0.05
+light_indirect_energy = 0.5
+light_volumetric_fog_energy = 3.0
+
+[node name="SpawnManager" parent="." instance=ExtResource("2_q5ld1")]
+
+[node name="ground2" type="MeshInstance3D" parent="."]
+transform = Transform3D(4.37114e-06, -3.82137e-13, 100, -8.74228e-06, -100, 0, 100, -8.74228e-06, -4.37114e-06, 0, 15, 0)
+mesh = SubResource("PlaneMesh_8oj7v")
+skeleton = NodePath("../..")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_5trxg")
