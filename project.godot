@@ -18,10 +18,15 @@ config/features=PackedStringArray("4.3", "GL Compatibility")
 
 multiplayerManager="*res://managers/multiplayerManager.gd"
 gameManager="*res://managers/gameManager.gd"
+RuntimeDebugTools="*res://addons/runtime_debug_tools/scenes/remote_inspector.tscn"
 
 [dotnet]
 
 project/assembly_name="fpsurvivors"
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/runtime_debug_tools/plugin.cfg", "res://addons/script-ide/plugin.cfg")
 
 [input]
 

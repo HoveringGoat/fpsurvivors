@@ -9,6 +9,7 @@ extends CharacterBody3D
 @export var lookTiltSpeed : float
 @export var isOnFloor = true
 @export var isJumping = false
+@export var isRunning = false
 @export var maxHealth : float = 100.0
 @export var health : float = maxHealth:
 	set(value):
@@ -48,7 +49,11 @@ var invulnerableTime = 5
 @onready var multiplayerSynchronizer: MultiplayerSynchronizer = %MultiplayerSynchronizer
 @onready var inputs: MultiplayerSynchronizer = %InputSynchronizer
 @onready var floorRayCast: RayCast3D = %FloorRayCast
-
+@onready var footStepAudioPlayer = $FootStepAudioPlayer
+const walkingFootstepsAudio = preload("res://audio/Walking_Footsteps_Stone.mp3")
+const runningFootstepsAudio = preload("res://audio/Running_Footsteps_Stone.mp3")
+var runningAudioPlaying : bool = false
+var walkingAudioPlaying : bool = false
 @export
 var syncedPosition := Vector3()
 
@@ -110,13 +115,15 @@ func _apply_movement_from_input(delta):
 			
 		velY += jumpForce * delta
 
-	var inputMotion = inputs.motion.rotated(rotation.y * -1)
+	var inputMotion = inputs.motion.rotated((direction.rotation.y+headPivot.rotation.y) * -1)
 	# Get the input direction: -1, 0, 1
 	if isOnFloor:
 		motion = inputMotion * delta
 		if inputs.sprint:
+			isRunning = true
 			motion *= sprintSpeed
 		else:
+			isRunning = false
 			motion *= speed
 	else:
 		motion = Vector2(velocity.x, velocity.z) * .995
@@ -166,7 +173,50 @@ func _apply_movement_from_input(delta):
 			#playerModel.currentAnimation = playerModel.Animations.Attack
 			#swordAttack.performHit()
 			
+			
+	applyFootStepSounds()
 	move_and_slide()
+	
+func applyFootStepSounds():
+	if !isOnFloor or motion == Vector2.ZERO:
+		if runningAudioPlaying or walkingAudioPlaying:
+			print("stopping footstep audio")
+			runningAudioPlaying = false
+			walkingAudioPlaying = false
+			footStepAudioPlayer.stop()
+		return
+	
+	# we are on the ground and moving
+	
+	
+	# play running audio
+	if !runningAudioPlaying and isRunning:
+		print("playing running footstep audio")
+		
+		var startTime = 0.05
+		if walkingAudioPlaying:
+			startTime = footStepAudioPlayer.get_playback_position() / 0.8 * 1.2
+			
+		runningAudioPlaying = true
+		walkingAudioPlaying = false
+		footStepAudioPlayer.stream = runningFootstepsAudio
+		footStepAudioPlayer.volume_db = -12.0
+		footStepAudioPlayer.play(startTime)
+	
+	# play walking audio
+	if !walkingAudioPlaying and !isRunning:
+		print("playing walking footstep audio")
+		var startTime = 0.05
+		if runningAudioPlaying:
+			startTime = footStepAudioPlayer.get_playback_position() /  1.2 * 0.8
+		
+		runningAudioPlaying = false
+		walkingAudioPlaying = true
+		footStepAudioPlayer.stream = walkingFootstepsAudio
+		footStepAudioPlayer.volume_db = -14.0
+		footStepAudioPlayer.play(startTime)
+		
+	
 	
 func updateCamera(delta):
 	if inputs.zoom != 0:
