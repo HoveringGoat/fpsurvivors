@@ -10,6 +10,7 @@ extends CharacterBody3D
 @export var isOnFloor = true
 @export var isJumping = false
 @export var isRunning = false
+@export var isCrouching = false
 @export var maxHealth : float = 100.0
 @export var health : float = maxHealth:
 	set(value):
@@ -41,7 +42,12 @@ var isDead = false
 var isInvulnerable = false
 var invulnerableEndTime = 0
 var invulnerableTime = 5
+@export var timeForAvgStep : int = 500
+@export var timeModifierForCrouching : float = 0.5 # takes twice as long while crouching
+@export var timeModifierForSprinting : float = 1.4 # takes 40% less time while sprinting
+var nextStepProgress : float = 100 # each frame add adjusted time in ms progress to next step
 
+@onready var footStepGenerator = $FootStepGenerator
 @onready var camera3D: Camera3D = %Camera3D
 @onready var headPivot: Node3D = %HeadPivot
 @onready var direction: Node3D = %Direction
@@ -49,11 +55,6 @@ var invulnerableTime = 5
 @onready var multiplayerSynchronizer: MultiplayerSynchronizer = %MultiplayerSynchronizer
 @onready var inputs: MultiplayerSynchronizer = %InputSynchronizer
 @onready var floorRayCast: RayCast3D = %FloorRayCast
-@onready var footStepAudioPlayer = $FootStepAudioPlayer
-const walkingFootstepsAudio = preload("res://audio/Walking_Footsteps_Stone.mp3")
-const runningFootstepsAudio = preload("res://audio/Running_Footsteps_Stone.mp3")
-var runningAudioPlaying : bool = false
-var walkingAudioPlaying : bool = false
 @export
 var syncedPosition := Vector3()
 
@@ -109,6 +110,7 @@ func _apply_movement_from_input(delta):
 			isOnFloor = false
 			isJumping = true
 			curJumpTime = 0
+			forceStep(1)
 		curJumpTime += delta
 		if curJumpTime > jumpTime:
 			isJumping = false
@@ -174,49 +176,27 @@ func _apply_movement_from_input(delta):
 			#swordAttack.performHit()
 			
 			
-	applyFootStepSounds()
 	move_and_slide()
 	
-func applyFootStepSounds():
-	if !isOnFloor or motion == Vector2.ZERO:
-		if runningAudioPlaying or walkingAudioPlaying:
-			print("stopping footstep audio")
-			runningAudioPlaying = false
-			walkingAudioPlaying = false
-			footStepAudioPlayer.stop()
+func calculateStepProgress(delta):
+	if motion.length() == 0 or !isOnFloor:
 		return
+	var stepDelta = delta * 1000
+	var state = 0
+	if isRunning:
+		state = 1
+		stepDelta *= timeModifierForSprinting
+	elif isCrouching:
+		state = 2
+		stepDelta *= timeModifierForCrouching
 	
-	# we are on the ground and moving
-	
-	
-	# play running audio
-	if !runningAudioPlaying and isRunning:
-		print("playing running footstep audio")
+	nextStepProgress += stepDelta
+	if nextStepProgress >= timeForAvgStep:
+		forceStep(state)
 		
-		var startTime = 0.05
-		if walkingAudioPlaying:
-			startTime = footStepAudioPlayer.get_playback_position() / 0.8 * 1.2
-			
-		runningAudioPlaying = true
-		walkingAudioPlaying = false
-		footStepAudioPlayer.stream = runningFootstepsAudio
-		footStepAudioPlayer.volume_db = -12.0
-		footStepAudioPlayer.play(startTime)
-	
-	# play walking audio
-	if !walkingAudioPlaying and !isRunning:
-		print("playing walking footstep audio")
-		var startTime = 0.05
-		if runningAudioPlaying:
-			startTime = footStepAudioPlayer.get_playback_position() /  1.2 * 0.8
-		
-		runningAudioPlaying = false
-		walkingAudioPlaying = true
-		footStepAudioPlayer.stream = walkingFootstepsAudio
-		footStepAudioPlayer.volume_db = -14.0
-		footStepAudioPlayer.play(startTime)
-		
-	
+func forceStep(state: int):
+	nextStepProgress -= timeForAvgStep
+	footStepGenerator.step(state)
 	
 func updateCamera(delta):
 	if inputs.zoom != 0:
@@ -244,6 +224,7 @@ func _physics_process(delta):
 		
 	# perform position update with latest input still perform motion on client
 	_apply_movement_from_input(delta)
+	calculateStepProgress(delta)
 	
 	# apply animations if we're not the server (unless we're the host)
 	if not multiplayer.is_server() || multiplayerManager.host_mode_enabled:

@@ -24,6 +24,11 @@ RuntimeDebugTools="*res://addons/runtime_debug_tools/scenes/remote_inspector.tsc
 
 project/assembly_name="fpsurvivors"
 
+[editor]
+
+naming/scene_name_casing=1
+naming/script_name_casing=1
+
 [editor_plugins]
 
 enabled=PackedStringArray("res://addons/runtime_debug_tools/plugin.cfg", "res://addons/script-ide/plugin.cfg")
