@@ -20,6 +20,11 @@ multiplayerManager="*res://managers/multiplayerManager.gd"
 gameManager="*res://managers/gameManager.gd"
 RuntimeDebugTools="*res://addons/runtime_debug_tools/scenes/remote_inspector.tscn"
 
+[display]
+
+window/size/viewport_width=1920
+window/size/viewport_height=1080
+
 [dotnet]
 
 project/assembly_name="fpsurvivors"
