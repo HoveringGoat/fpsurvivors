@@ -4,7 +4,6 @@ extends Node3D
 @onready var footStepAudioPlayer = $FootStepAudioPlayer
 
 func step(state : int):
-	print("step")
 	# char takes a step. Play sound according to current speed
 	var randIndex = randi_range(0,len(footstepAudios)-1)
 	footStepAudioPlayer.stream = footstepAudios[randIndex]
