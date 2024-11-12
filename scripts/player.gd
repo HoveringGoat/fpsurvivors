@@ -9,6 +9,8 @@ extends CharacterBody3D
 @export var lookTiltSpeed : float
 @export var isOnFloor = true
 @export var isJumping = false
+@export var isRunning = false
+@export var isCrouching = false
 @export var maxHealth : float = 100.0
 @export var health : float = maxHealth:
 	set(value):
@@ -40,7 +42,12 @@ var isDead = false
 var isInvulnerable = false
 var invulnerableEndTime = 0
 var invulnerableTime = 5
+@export var timeForAvgStep : int = 500
+@export var timeModifierForCrouching : float = 0.5 # takes twice as long while crouching
+@export var timeModifierForSprinting : float = 1.4 # takes 40% less time while sprinting
+var nextStepProgress : float = 100 # each frame add adjusted time in ms progress to next step
 
+@onready var footStepGenerator = $FootStepGenerator
 @onready var camera3D: Camera3D = %Camera3D
 @onready var headPivot: Node3D = %HeadPivot
 @onready var direction: Node3D = %Direction
@@ -48,7 +55,6 @@ var invulnerableTime = 5
 @onready var multiplayerSynchronizer: MultiplayerSynchronizer = %MultiplayerSynchronizer
 @onready var inputs: MultiplayerSynchronizer = %InputSynchronizer
 @onready var floorRayCast: RayCast3D = %FloorRayCast
-
 @export
 var syncedPosition := Vector3()
 
@@ -104,19 +110,22 @@ func _apply_movement_from_input(delta):
 			isOnFloor = false
 			isJumping = true
 			curJumpTime = 0
+			forceStep(1)
 		curJumpTime += delta
 		if curJumpTime > jumpTime:
 			isJumping = false
 			
 		velY += jumpForce * delta
 
-	var inputMotion = inputs.motion.rotated(rotation.y * -1)
+	var inputMotion = inputs.motion.rotated((direction.rotation.y+headPivot.rotation.y) * -1)
 	# Get the input direction: -1, 0, 1
 	if isOnFloor:
 		motion = inputMotion * delta
 		if inputs.sprint:
+			isRunning = true
 			motion *= sprintSpeed
 		else:
+			isRunning = false
 			motion *= speed
 	else:
 		motion = Vector2(velocity.x, velocity.z) * .995
@@ -166,7 +175,28 @@ func _apply_movement_from_input(delta):
 			#playerModel.currentAnimation = playerModel.Animations.Attack
 			#swordAttack.performHit()
 			
+			
 	move_and_slide()
+	
+func calculateStepProgress(delta):
+	if motion.length() == 0 or !isOnFloor:
+		return
+	var stepDelta = delta * 1000
+	var state = 0
+	if isRunning:
+		state = 1
+		stepDelta *= timeModifierForSprinting
+	elif isCrouching:
+		state = 2
+		stepDelta *= timeModifierForCrouching
+	
+	nextStepProgress += stepDelta
+	if nextStepProgress >= timeForAvgStep:
+		forceStep(state)
+		
+func forceStep(state: int):
+	nextStepProgress -= timeForAvgStep
+	footStepGenerator.step(state)
 	
 func updateCamera(delta):
 	if inputs.zoom != 0:
@@ -194,6 +224,7 @@ func _physics_process(delta):
 		
 	# perform position update with latest input still perform motion on client
 	_apply_movement_from_input(delta)
+	calculateStepProgress(delta)
 	
 	# apply animations if we're not the server (unless we're the host)
 	if not multiplayer.is_server() || multiplayerManager.host_mode_enabled:

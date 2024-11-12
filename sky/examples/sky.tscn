@@ -1,0 +1,28 @@
+[gd_scene load_steps=4 format=3 uid="uid://cg3m5qnyxjev4"]
+
+[ext_resource type="Material" uid="uid://dh6ykun8bv60u" path="res://sky/examples/day_sky.tres" id="1_wsuie"]
+
+[sub_resource type="Sky" id="Sky_a3msv"]
+sky_material = ExtResource("1_wsuie")
+
+[sub_resource type="Environment" id="Environment_vu8s3"]
+background_mode = 2
+sky = SubResource("Sky_a3msv")
+ambient_light_source = 2
+ambient_light_color = Color(0.45098, 0.333333, 0.309804, 1)
+ambient_light_energy = 0.5
+tonemap_mode = 2
+glow_enabled = true
+glow_bloom = 0.2
+
+[node name="Sky" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_vu8s3")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.984196, 0.113117, -0.136249, 0.0258875, 0.669231, 0.742603, 0.175184, -0.734395, 0.655725, 0, 0, 0)
+shadow_enabled = true
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(0.694658, 0.476649, 0.538754, 0, 0.748956, -0.66262, -0.71934, 0.460295, 0.520268, 0, 0, 0)
