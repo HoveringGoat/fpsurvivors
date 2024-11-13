@@ -20,10 +20,15 @@ multiplayerManager="*res://managers/multiplayerManager.gd"
 gameManager="*res://managers/gameManager.gd"
 RuntimeDebugTools="*res://addons/runtime_debug_tools/scenes/remote_inspector.tscn"
 
+[debug]
+
+settings/stdout/print_fps=true
+
 [display]
 
 window/size/viewport_width=1920
 window/size/viewport_height=1080
+window/vsync/vsync_mode=0
 
 [dotnet]
 
