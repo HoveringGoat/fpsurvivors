@@ -277,7 +277,7 @@ void sky() {
 		float cloudAlphaReduction = clamp((1.0 - (dayPercent+.5))*1.2, 0.0, 1.0);
 		COLOR = mix(COLOR, sky_color, cloudAlphaReduction);
 		
-		ALPHA = (1.0 - exp(-clouds.x * horizon_mask * bottom_mask * 10.0) - cloudAlphaReduction);
+		ALPHA = (1.0 - exp(-clouds.x * horizon_mask * bottom_mask * 10.0));
 
 	}else{
 		COLOR.rgb = mix(sky_color, HALF_RES_COLOR.rgb, HALF_RES_COLOR.a);
