@@ -6,7 +6,7 @@
 
 [node name="Game" type="Node3D"]
 script = ExtResource("1_41kti")
-worlds = Array[PackedScene]([ExtResource("2_kfexv"), ExtResource("2_usqdt")])
+worlds = Array[PackedScene]([ExtResource("2_usqdt"), ExtResource("2_kfexv")])
 
 [node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="."]
 spawn_path = NodePath("../Players")
