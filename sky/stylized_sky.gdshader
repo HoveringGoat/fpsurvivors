@@ -11,6 +11,8 @@ uniform int clouds_samples : hint_range(8, 32, 8) = 16;
 uniform int shadow_sample : hint_range(1, 4, 1) = 4;
 
 uniform float clouds_density : hint_range(0.0, 1.0, 0.01) = 0.5;
+uniform float clouds_falloff : hint_range(0.0, 1.0, 0.01) = 0.1;
+
 uniform float clouds_scale : hint_range(0.5, 1.5, 0.1) = 1.0;
 uniform float clouds_smoothness : hint_range(0.01, 0.1, 0.01) = 0.035;
 
@@ -124,7 +126,7 @@ float cloud_density(vec3 p, float progress){
 	float noise = texture(cloud_noise_sampler, p.xy * 4.0 + t_o_small).x * 0.1 + 0.9;
 	float clouds_shape = texture(cloud_shape_sampler, (p.xy + t_o) * clouds_scale).x;
 	float height_curve = texture(cloud_curves, vec2(progress, 0.0)).x;
-	float base_density = 1.0 - clouds_density;
+	float base_density = clamp((1.0 - clouds_density) - ((abs(p.x) + abs(p.y)) * - 0.1 * clouds_falloff), 0.0, 1.0);
 	float density =
 	smoothstep(base_density - clouds_smoothness,
 	base_density + clouds_smoothness,
