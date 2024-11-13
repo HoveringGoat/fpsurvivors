@@ -10,11 +10,11 @@ func step(state : int):
 	# walking default audio volume
 	footStepAudioPlayer.volume_db = -12
 	# running 
-	if state == 1:
+	if state == Enums.movementState.running:
 		footStepAudioPlayer.volume_db += 2
 		pass
 	# crouching
-	elif state == 2:
+	elif state == Enums.movementState.crouching:
 		footStepAudioPlayer.volume_db -= 2
 		pass
 	footStepAudioPlayer.play()
