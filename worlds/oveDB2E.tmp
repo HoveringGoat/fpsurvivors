@@ -12,7 +12,7 @@ sky_material = ExtResource("3_1o7ck")
 background_mode = 2
 sky = SubResource("Sky_ieg05")
 ambient_light_source = 2
-ambient_light_color = Color(0.831257, 0.727815, 0.706637, 1)
+ambient_light_color = Color(0.45098, 0.333333, 0.309804, 1)
 ambient_light_energy = 0.5
 tonemap_mode = 2
 glow_enabled = true
@@ -31,7 +31,6 @@ time_of_day = 0.15
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.987136, 0.140618, 0.076085, 0.0139161, 0.398506, -0.917061, -0.159276, 0.906322, 0.391423, 0, 2.98314, 0)
-light_energy = 0.7
 shadow_enabled = true
 
 [node name="ground" type="MeshInstance3D" parent="."]

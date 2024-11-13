@@ -21,7 +21,8 @@ texture_mode = 1
 curve = SubResource("Curve_eapw0")
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_4c2cr"]
-frequency = 0.0049
+seed = 874407
+frequency = 0.001
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_lkl1w"]
 seamless = true
@@ -46,11 +47,11 @@ noise = SubResource("FastNoiseLite_nsbgi")
 [resource]
 shader = ExtResource("1_8je60")
 shader_parameter/clouds_samples = 32
-shader_parameter/shadow_sample = 2
-shader_parameter/clouds_density = 0.36
-shader_parameter/clouds_scale = 1.0
+shader_parameter/shadow_sample = 3
+shader_parameter/clouds_density = 0.37
+shader_parameter/clouds_scale = 1.2
 shader_parameter/clouds_smoothness = 0.04
-shader_parameter/time_of_day = 0.3
+shader_parameter/time_of_day = 0.32
 shader_parameter/clouds_light_color_day = Color(1, 1, 1, 1)
 shader_parameter/clouds_shadow_color_day = Color(0.593134, 0.593134, 0.593134, 1)
 shader_parameter/clouds_light_color_night = Color(0.286275, 0.333333, 0.439216, 1)

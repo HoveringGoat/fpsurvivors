@@ -4,18 +4,16 @@ extends WorldEnvironment
 # Called when the node enters the scene tree for the first time.
 @export var directional_light_3d : DirectionalLight3D
 
-@export var time_of_day : float = 0.15
-var timeSpeed :float = 1
+@export var time_of_day : float
 var lengthOfDay : int = 3*60
 
 func _ready():
-	timeSpeed = 1.0 / lengthOfDay;
 	pass # Replace with function body.
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	time_of_day += delta * timeSpeed
+	time_of_day += delta / lengthOfDay
 	
 	if time_of_day > 1 or time_of_day < 0:
 		time_of_day =fmod(time_of_day, 1) + 1
