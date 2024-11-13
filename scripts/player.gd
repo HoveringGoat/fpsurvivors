@@ -81,6 +81,52 @@ func _ready():
 		# playerInteractor runs on the server
 		pass
 
+# the actual main process loop
+# most of the main methods here are called from this
+func _physics_process(delta):
+	# update position from server
+	# we want to do this before updating positions from input
+	if not multiplayer.is_server() || multiplayerManager.host_mode_enabled:
+		# update position to synced position weight current client position
+		# to smooth out any artifacts from late packets or abrubt position changes
+		position = (syncedPosition+position*2)/3
+		
+	if position.y <= 0:
+		isOnFloor = true
+		position.y = 0
+	else:
+		if floorRayCast.get_collider() != null:
+			isOnFloor = true
+		
+	# perform position update with latest input still perform motion on client
+	# for other clients we will apply their last frame input as motion.
+	# it'll be corrected later from information from the server.
+	#Shouldn't really be noticable unless ping is very high
+	_apply_movement_from_input(delta)
+	calculateStepProgress(delta)
+	
+	# stuff to do if we're A client 
+	# apply animations if we're not the server (unless we're the host)
+	if not multiplayer.is_server() || multiplayerManager.host_mode_enabled:
+		updateAnimations()
+		
+	# stuff to do if we're server
+	if multiplayer.is_server():
+		# there will probably be more to sync eventually rather than just position
+		if isInvulnerable and Time.get_ticks_msec() > invulnerableEndTime: 
+			isInvulnerable = false
+		syncedPosition = position
+	
+	#  stuff to do if this is this players client
+	if multiplayer.get_unique_id() == player_id:
+		updateCamera(delta)
+		if cameraTargetPos != camera3D.position:
+			var diff = cameraTargetPos - camera3D.position 
+			if diff.length() < 0.01:
+				camera3D.position = cameraTargetPos
+			else:
+				camera3D.position += diff * 0.15
+
 # Method controlling which animations are playing  - Not used
 func updateAnimations():
 	if isDead:
@@ -117,7 +163,7 @@ func _apply_movement_from_input(delta):
 			isOnFloor = false
 			isJumping = true
 			curJumpTime = 0
-			forceStep(1)
+			forceStep(Enums.movementState.running)
 		curJumpTime += delta
 		
 		# jump runs out
@@ -202,12 +248,12 @@ func calculateStepProgress(delta):
 	if motion.length() == 0 or !isOnFloor:
 		return
 	var stepDelta = delta * 1000
-	var state = 0
+	var state = Enums.movementState.walking
 	if isRunning:
-		state = 1
+		state = Enums.movementState.running
 		stepDelta *= timeModifierForSprinting
 	elif isCrouching:
-		state = 2
+		state = Enums.movementState.crouching
 		stepDelta *= timeModifierForCrouching
 	
 	nextStepProgress += stepDelta
@@ -215,7 +261,6 @@ func calculateStepProgress(delta):
 		forceStep(state)
 		
 # this is called when a step needs to be taken
-# state should be an enum (but im too lazy to do that)
 # it refers to the state of the char motion when the step happened.
 # right now there is walking running and crouching
 func forceStep(state: int):
@@ -235,52 +280,6 @@ func updateTargetCameraPosition(delta):
 	var yOffset = abs(zoomLevel - 1) * 0.7 + .8
 	
 	cameraTargetPos = Vector3(0,offset+yOffset,offset)
-
-# the actual main process loop
-# most of the main methods here are called from this
-func _physics_process(delta):
-	# update position from server
-	# we want to do this before updating positions from input
-	if not multiplayer.is_server() || multiplayerManager.host_mode_enabled:
-		# update position to synced position weight current client position
-		# to smooth out any artifacts from late packets or abrubt position changes
-		position = (syncedPosition+position*2)/3
-		
-	if position.y <= 0:
-		isOnFloor = true
-		position.y = 0
-	else:
-		if floorRayCast.get_collider() != null:
-			isOnFloor = true
-		
-	# perform position update with latest input still perform motion on client
-	# for other clients we will apply their last frame input as motion.
-	# it'll be corrected later from information from the server.
-	#Shouldn't really be noticable unless ping is very high
-	_apply_movement_from_input(delta)
-	calculateStepProgress(delta)
-	
-	# stuff to do if we're A client 
-	# apply animations if we're not the server (unless we're the host)
-	if not multiplayer.is_server() || multiplayerManager.host_mode_enabled:
-		updateAnimations()
-		
-	# stuff to do if we're server
-	if multiplayer.is_server():
-		# there will probably be more to sync eventually rather than just position
-		if isInvulnerable and Time.get_ticks_msec() > invulnerableEndTime: 
-			isInvulnerable = false
-		syncedPosition = position
-	
-	#  stuff to do if this is this players client
-	if multiplayer.get_unique_id() == player_id:
-		updateCamera(delta)
-		if cameraTargetPos != camera3D.position:
-			var diff = cameraTargetPos - camera3D.position 
-			if diff.length() < 0.01:
-				camera3D.position = cameraTargetPos
-			else:
-				camera3D.position += diff * 0.15
 
 
 # hittable stuff. might replace/rewrite - not used
