@@ -273,7 +273,11 @@ void sky() {
 		vec2 clouds = EYEDIR.y > 0.0 ? cloud_ray_march(clouds_direction, LIGHT0_DIRECTION) : vec2(0.0);
 
 		COLOR = mix(clouds_shadow_color, clouds_light_color, exp(-clouds.y * clouds_shadow_intensity * 0.5));
-		ALPHA = (1.0 - exp(-clouds.x * horizon_mask * bottom_mask * 10.0));
+		
+		float cloudAlphaReduction = clamp((1.0 - (dayPercent+.5))*1.2, 0.0, 1.0);
+		COLOR = mix(COLOR, sky_color, cloudAlphaReduction);
+		
+		ALPHA = (1.0 - exp(-clouds.x * horizon_mask * bottom_mask * 10.0) - cloudAlphaReduction);
 
 	}else{
 		COLOR.rgb = mix(sky_color, HALF_RES_COLOR.rgb, HALF_RES_COLOR.a);
