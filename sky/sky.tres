@@ -1,0 +1,90 @@
+[gd_resource type="ShaderMaterial" load_steps=13 format=3 uid="uid://dh6ykun8bv60u"]
+
+[ext_resource type="Shader" path="res://sky/stylized_sky.gdshader" id="1_8je60"]
+[ext_resource type="Texture2D" uid="uid://dvuwb0yce4sb7" path="res://sky/shooting_star_sampler.png" id="2_dav1w"]
+
+[sub_resource type="Gradient" id="Gradient_hjww8"]
+offsets = PackedFloat32Array(0.48, 0.6)
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_xucge"]
+gradient = SubResource("Gradient_hjww8")
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+
+[sub_resource type="Curve" id="Curve_eapw0"]
+_data = [Vector2(0, 0), 0.0, 10.0, 0, 1, Vector2(0.1, 1), 0.0, 0.0, 0, 0, Vector2(1, 0.8), -0.222222, 0.0, 1, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_pcewo"]
+texture_mode = 1
+curve = SubResource("Curve_eapw0")
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_4c2cr"]
+seed = 874407
+frequency = 0.005
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_lkl1w"]
+seamless = true
+noise = SubResource("FastNoiseLite_4c2cr")
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_rs0k1"]
+seed = -407099693
+frequency = 0.0075
+fractal_octaves = 10
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_or465"]
+seamless = true
+noise = SubResource("FastNoiseLite_rs0k1")
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_nsbgi"]
+noise_type = 3
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_27faw"]
+seamless = true
+noise = SubResource("FastNoiseLite_nsbgi")
+
+[resource]
+shader = ExtResource("1_8je60")
+shader_parameter/clouds_samples = 32
+shader_parameter/shadow_sample = 3
+shader_parameter/clouds_density = 0.4
+shader_parameter/clouds_falloff = 0.09
+shader_parameter/clouds_scale = 1.2
+shader_parameter/clouds_smoothness = 0.04
+shader_parameter/time_of_day = 0.32
+shader_parameter/clouds_light_color_day = Color(1, 1, 1, 1)
+shader_parameter/clouds_shadow_color_day = Color(0.593134, 0.593134, 0.593134, 1)
+shader_parameter/clouds_light_color_night = Color(0.286275, 0.333333, 0.439216, 1)
+shader_parameter/clouds_shadow_color_night = Color(0.342, 0.397733, 0.76, 1)
+shader_parameter/clouds_light_color_dawn = Color(0.933423, 0.442156, 0.465273, 1)
+shader_parameter/clouds_shadow_color_dawn = Color(0.947114, 0.696494, 0.651712, 1)
+shader_parameter/clouds_light_color_dusk = Color(0.713683, 0.378048, 0.287985, 1)
+shader_parameter/clouds_shadow_color_dusk = Color(0.528712, 0.259147, 0.189469, 1)
+shader_parameter/clouds_shadow_intensity = 4.4
+shader_parameter/cloud_shape_sampler = SubResource("NoiseTexture2D_or465")
+shader_parameter/cloud_noise_sampler = SubResource("NoiseTexture2D_lkl1w")
+shader_parameter/cloud_curves = SubResource("CurveTexture_pcewo")
+shader_parameter/high_clouds_density = 0.1
+shader_parameter/high_clouds_sampler = SubResource("NoiseTexture2D_27faw")
+shader_parameter/sky_top_color_day = Color(0.194114, 0.286241, 0.862814, 1)
+shader_parameter/sky_bottom_color_day = Color(0.337386, 0.370411, 1, 1)
+shader_parameter/sky_top_color_night = Color(0.0156863, 0.0705882, 0.188235, 1)
+shader_parameter/sky_bottom_color_night = Color(0.0144947, 0.0651117, 0.17864, 1)
+shader_parameter/sky_top_color_dawn = Color(0.259888, 0.303959, 0.63741, 1)
+shader_parameter/sky_bottom_color_dawn = Color(0.36, 0.28872, 0.2016, 1)
+shader_parameter/sky_top_color_dusk = Color(0.28322, 0.234816, 0.458502, 1)
+shader_parameter/sky_bottom_color_dusk = Color(0.385626, 0.247662, 0.227961, 1)
+shader_parameter/sun_scatter_day = Color(0.206014, 5.31363e-05, 0.738955, 1)
+shader_parameter/sun_scatter_night = Color(0.189234, 0.00038341, 0.458058, 1)
+shader_parameter/sun_scatter_dawn = Color(0.47, 0.188, 0, 1)
+shader_parameter/sun_scatter_dusk = Color(0.544702, 0.135025, 0, 1)
+shader_parameter/astro_tint = Color(0.905882, 0.788235, 0.627451, 1)
+shader_parameter/astro_scale = 9.0
+shader_parameter/astro_intensity = 3.0
+shader_parameter/astro_sampler = SubResource("GradientTexture2D_xucge")
+shader_parameter/stars_intensity = 5.0
+shader_parameter/shooting_stars_intensity = 4.0
+shader_parameter/shooting_star_tint = Color(0.933333, 0.627451, 0.376471, 1)
+shader_parameter/shooting_star_tint_day = null
+shader_parameter/shooting_star_sampler = ExtResource("2_dav1w")
