@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=4 uid="uid://c4tj3ps6i8l3w"]
+[gd_scene load_steps=26 format=4 uid="uid://c4tj3ps6i8l3w"]
 
 [ext_resource type="Script" path="res://scripts/player.gd" id="1_4efss"]
 [ext_resource type="Script" path="res://scripts/input.gd" id="2_demjr"]
@@ -20,6 +20,7 @@
 [ext_resource type="AudioStream" uid="uid://mkngj3gurcwj" path="res://audio/footsteps/footsteps15.mp3" id="18_vhvap"]
 [ext_resource type="AudioStream" uid="uid://csrt2esh80si4" path="res://audio/footsteps/footsteps16.mp3" id="19_u827p"]
 [ext_resource type="AudioStream" uid="uid://c4kb6y5p1k5wx" path="res://audio/footsteps/footsteps17.mp3" id="20_7uam3"]
+[ext_resource type="Script" path="res://scripts/reticle.gd" id="21_yjwdy"]
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_spxc6"]
 
@@ -89,3 +90,43 @@ footstepAudios = Array[AudioStream]([ExtResource("4_adjtq"), ExtResource("5_goo7
 stream = SubResource("AudioStreamMP3_jqh0i")
 volume_db = 1.0
 pitch_scale = 0.85
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Reticle" type="CenterContainer" parent="Control" node_paths=PackedStringArray("RETICLE_LINES", "PLAYER_CONTROLLER")]
+layout_mode = 0
+offset_left = 40.0
+offset_top = 40.0
+offset_right = 80.0
+offset_bottom = 80.0
+script = ExtResource("21_yjwdy")
+RETICLE_LINES = [NodePath("Top"), NodePath("Right"), NodePath("Bottom"), NodePath("Left")]
+PLAYER_CONTROLLER = NodePath("../..")
+
+[node name="Top" type="Line2D" parent="Control/Reticle"]
+points = PackedVector2Array(0, -5, 0, -15)
+width = 2.0
+
+[node name="Right" type="Line2D" parent="Control/Reticle"]
+points = PackedVector2Array(5, 0, 15, 0)
+width = 2.0
+
+[node name="Bottom" type="Line2D" parent="Control/Reticle"]
+points = PackedVector2Array(0, 5, 0, 15)
+width = 2.0
+
+[node name="Left" type="Line2D" parent="Control/Reticle"]
+points = PackedVector2Array(-5, 0, -15, 0)
+width = 2.0
