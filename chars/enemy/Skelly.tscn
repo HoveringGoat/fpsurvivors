@@ -1,0 +1,147 @@
+[gd_scene load_steps=18 format=3 uid="uid://6powm7ymtvo"]
+
+[ext_resource type="Script" path="res://chars/enemy/Enemy.gd" id="1_wm8q5"]
+[ext_resource type="PackedScene" uid="uid://dpjdgra0p6wu4" path="res://assets/monsters/Skeleton.fbx" id="2_5nqjt"]
+[ext_resource type="Script" path="res://Components/Hittable/Hitter.gd" id="3_pcy38"]
+[ext_resource type="PackedScene" uid="uid://dejrh0kplo1ig" path="res://Components/HealthBar/Healthbar.tscn" id="4_f0nob"]
+[ext_resource type="Script" path="res://Components/Hittable/Hittable.gd" id="5_2limn"]
+[ext_resource type="PackedScene" uid="uid://cvksjt4n8s5qw" path="res://Components/Footsteps/FootStepGenerator.tscn" id="6_k2jki"]
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_h5370"]
+properties/0/path = NodePath(".:syncedPosition")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+properties/1/path = NodePath(".:syncedTargetPlayerId")
+properties/1/spawn = true
+properties/1/replication_mode = 1
+properties/2/path = NodePath(".:health")
+properties/2/spawn = true
+properties/2/replication_mode = 1
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_0k03l"]
+animation = &"SkeletonArmature|Skeleton_Running"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_60afp"]
+animation = &"SkeletonArmature|Skeleton_Attack"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_2odqa"]
+animation = &"SkeletonArmature|Skeleton_Death"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_qn775"]
+animation = &"SkeletonArmature|Skeleton_Idle"
+
+[sub_resource type="AnimationNodeOneShot" id="AnimationNodeOneShot_dt0ln"]
+filter_enabled = true
+filters = ["RootNode/SkeletonArmature/Skeleton3D:Head", "RootNode/SkeletonArmature/Skeleton3D:Hips", "RootNode/SkeletonArmature/Skeleton3D:L.DownLeg.001", "RootNode/SkeletonArmature/Skeleton3D:L.UpperLeg.001", "RootNode/SkeletonArmature/Skeleton3D:R.DownLeg.001", "RootNode/SkeletonArmature/Skeleton3D:R.UpperLeg.001", "RootNode/SkeletonArmature/Skeleton3D:Torso"]
+
+[sub_resource type="AnimationNodeBlend2" id="AnimationNodeBlend2_h6301"]
+
+[sub_resource type="AnimationNodeBlend2" id="AnimationNodeBlend2_4p0h6"]
+
+[sub_resource type="AnimationNodeBlendTree" id="AnimationNodeBlendTree_tchcn"]
+graph_offset = Vector2(-97.6697, -51.8435)
+nodes/Animation/node = SubResource("AnimationNodeAnimation_qn775")
+nodes/Animation/position = Vector2(280, 60)
+"nodes/Animation 2/node" = SubResource("AnimationNodeAnimation_0k03l")
+"nodes/Animation 2/position" = Vector2(360, 200)
+"nodes/Animation 3/node" = SubResource("AnimationNodeAnimation_60afp")
+"nodes/Animation 3/position" = Vector2(720, 340)
+"nodes/Animation 4/node" = SubResource("AnimationNodeAnimation_2odqa")
+"nodes/Animation 4/position" = Vector2(1160, 340)
+nodes/Attack/node = SubResource("AnimationNodeOneShot_dt0ln")
+nodes/Attack/position = Vector2(1140, 60)
+nodes/Death/node = SubResource("AnimationNodeBlend2_h6301")
+nodes/Death/position = Vector2(1480, 60)
+nodes/Run/node = SubResource("AnimationNodeBlend2_4p0h6")
+nodes/Run/position = Vector2(800, 60)
+nodes/output/position = Vector2(1980, 60)
+node_connections = [&"Attack", 0, &"Run", &"Attack", 1, &"Animation 3", &"Death", 0, &"Attack", &"Death", 1, &"Animation 4", &"Run", 0, &"Animation", &"Run", 1, &"Animation 2", &"output", 0, &"Death"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_2glsp"]
+radius = 0.35
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_8ejw0"]
+radius = 0.9
+
+[node name="Skelly" type="CharacterBody3D"]
+script = ExtResource("1_wm8q5")
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_h5370")
+
+[node name="AnimationTree" type="AnimationTree" parent="."]
+unique_name_in_owner = true
+deterministic = false
+root_node = NodePath("%Direction")
+tree_root = SubResource("AnimationNodeBlendTree_tchcn")
+anim_player = NodePath("../Direction/AnimationPlayer")
+parameters/Attack/active = false
+parameters/Attack/internal_active = false
+parameters/Attack/request = 0
+parameters/Death/blend_amount = 0.0
+parameters/Run/blend_amount = 0.4
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+shape = SubResource("CapsuleShape3D_2glsp")
+
+[node name="Direction" parent="." instance=ExtResource("2_5nqjt")]
+unique_name_in_owner = true
+transform = Transform3D(-0.4, 0, -3.49691e-08, 0, 0.4, 0, 3.49691e-08, 0, -0.4, 0, 0, 0)
+
+[node name="RootNode" parent="Direction" index="0"]
+transform = Transform3D(-1, 0, -1.50996e-07, 0, 1, 0, 1.50996e-07, 0, -1, 0, 0, 0)
+
+[node name="Skeleton3D" parent="Direction/RootNode/SkeletonArmature" index="0"]
+bones/0/position = Vector3(0, -9.4973e-22, 0.00388744)
+bones/1/position = Vector3(-6.46081e-22, 0.00626258, 0)
+bones/1/rotation = Quaternion(7.32588e-24, -1.05879e-23, -2.64698e-24, 1)
+bones/3/rotation = Quaternion(-0.00109641, 0.0289707, 0.0803472, 0.996345)
+bones/5/position = Vector3(-0.00200855, -0.00293054, 0.00512165)
+bones/5/rotation = Quaternion(0.959016, -0.281102, -0.0100264, 0.0342071)
+bones/6/rotation = Quaternion(0.121453, -0.70435, 0.0965447, 0.69269)
+bones/8/position = Vector3(0.00289654, -0.00303981, -0.00507784)
+bones/8/rotation = Quaternion(0.989768, 0.134729, -0.00633704, -0.0465572)
+bones/9/rotation = Quaternion(-0.0175671, -0.706594, 0.0237418, 0.707003)
+bones/11/rotation = Quaternion(0.964034, 0.176543, 0.0377914, 0.195043)
+bones/12/rotation = Quaternion(-0.0370303, -0.64975, -0.190622, 0.734926)
+bones/14/rotation = Quaternion(0.949227, -0.237259, 0.0469965, -0.201166)
+bones/15/rotation = Quaternion(-0.0442712, -0.674328, 0.137018, 0.724257)
+
+[node name="Hitter" type="Area3D" parent="Direction" node_paths=PackedStringArray("controller")]
+unique_name_in_owner = true
+transform = Transform3D(-2.5, 0, 2.18557e-07, 0, 2.5, 0, -2.18557e-07, 0, -2.5, 0, 0, 0)
+collision_layer = 2
+collision_mask = 2
+script = ExtResource("3_pcy38")
+controller = NodePath("../..")
+knockbackForce = 10.0
+damage = 1
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Direction/Hitter"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0.6)
+shape = SubResource("SphereShape3D_8ejw0")
+
+[node name="Healthbar" parent="." instance=ExtResource("4_f0nob")]
+unique_name_in_owner = true
+transform = Transform3D(0.35, 0, 2.4869e-15, 0, 0.35, 0, -2.4869e-15, 0, 0.35, 0, 2.37812, 0)
+
+[node name="Hittable" type="Area3D" parent="."]
+collision_layer = 8
+collision_mask = 8
+script = ExtResource("5_2limn")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Hittable"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+shape = SubResource("CapsuleShape3D_2glsp")
+
+[node name="FloorRayCast" type="RayCast3D" parent="."]
+unique_name_in_owner = true
+target_position = Vector3(0, -0.01, 0)
+
+[node name="FootStepGenerator" parent="." instance=ExtResource("6_k2jki")]
+
+[connection signal="hit" from="Hittable" to="." method="_on_hittable_hit"]
+
+[editable path="Direction"]

@@ -1,0 +1,76 @@
+[gd_scene load_steps=8 format=3 uid="uid://c4tj3ps6i8l3w"]
+
+[ext_resource type="Script" path="res://chars/player/player.gd" id="1_4efss"]
+[ext_resource type="Script" path="res://scripts/input.gd" id="2_demjr"]
+[ext_resource type="PackedScene" uid="uid://cvksjt4n8s5qw" path="res://Components/Footsteps/FootStepGenerator.tscn" id="3_u24m5"]
+[ext_resource type="PackedScene" uid="uid://bnu17xdgqx21q" path="res://Components/Hittable/Hittable.tscn" id="21_jqymd"]
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_spxc6"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_8off7"]
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_0rr2k"]
+
+[node name="Player" type="CharacterBody3D"]
+script = ExtResource("1_4efss")
+jumpForce = 170.0
+gravity = -20.0
+sprintSpeed = 450.0
+speed = 300.0
+lookPanSpeed = 30.0
+lookTiltSpeed = 20.0
+health = 100.0
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+unique_name_in_owner = true
+replication_config = SubResource("SceneReplicationConfig_spxc6")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+shape = SubResource("CapsuleShape3D_8off7")
+
+[node name="InputSynchronizer" type="MultiplayerSynchronizer" parent="."]
+unique_name_in_owner = true
+root_path = NodePath(".")
+replication_config = SubResource("SceneReplicationConfig_0rr2k")
+script = ExtResource("2_demjr")
+
+[node name="FloorRayCast" type="RayCast3D" parent="."]
+unique_name_in_owner = true
+target_position = Vector3(0, -0.01, 0)
+
+[node name="OmniLight3D" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 0)
+light_color = Color(1, 0.769323, 0.701233, 1)
+light_energy = 1.5
+distance_fade_enabled = true
+omni_range = 80.0
+omni_attenuation = 1.1
+
+[node name="Direction" type="Node3D" parent="."]
+unique_name_in_owner = true
+
+[node name="HeadPivot" type="Node3D" parent="Direction"]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
+
+[node name="Camera3D" type="Camera3D" parent="Direction/HeadPivot"]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, 0)
+
+[node name="PlayerModel" type="Node3D" parent="Direction"]
+unique_name_in_owner = true
+
+[node name="FootStepGenerator" parent="." instance=ExtResource("3_u24m5")]
+baseSoundLevel = -22.0
+
+[node name="Hittable" parent="." instance=ExtResource("21_jqymd")]
+collision_layer = 2
+collision_mask = 2
+
+[node name="CollisionShape3D" parent="Hittable" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+
+[connection signal="hit" from="Hittable" to="." method="_on_hittable_hit"]
+
+[editable path="Hittable"]

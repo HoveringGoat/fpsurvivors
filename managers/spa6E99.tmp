@@ -1,0 +1,13 @@
+[gd_scene load_steps=2 format=3 uid="uid://b3yxrxhh7hmyf"]
+
+[ext_resource type="Script" path="res://managers/enemySpawnManager.gd" id="1_if2te"]
+
+[node name="SpawnManager" type="Node3D"]
+script = ExtResource("1_if2te")
+
+[node name="Spawns" type="Node3D" parent="."]
+unique_name_in_owner = true
+
+[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="."]
+spawn_path = NodePath("../Spawns")
+spawn_limit = 1000
