@@ -94,20 +94,20 @@ transform = Transform3D(-0.4, 0, -3.49691e-08, 0, 0.4, 0, 3.49691e-08, 0, -0.4, 
 transform = Transform3D(-1, 0, -1.50996e-07, 0, 1, 0, 1.50996e-07, 0, -1, 0, 0, 0)
 
 [node name="Skeleton3D" parent="Direction/RootNode/SkeletonArmature" index="0"]
-bones/0/position = Vector3(0, -4.83365e-22, 0.00456865)
-bones/1/position = Vector3(1.19806e-05, 0.0061847, -1.13028e-21)
-bones/1/rotation = Quaternion(6.13851e-24, -1.3191e-23, -0.00167142, 0.999999)
-bones/3/rotation = Quaternion(-0.000890915, 0.0349894, 0.103937, 0.993968)
-bones/5/position = Vector3(-0.00140506, -0.00403509, 0.00512165)
-bones/5/rotation = Quaternion(0.982512, -0.182753, -0.00651874, 0.035045)
-bones/6/rotation = Quaternion(0.0602722, -0.708176, 0.0340685, 0.702633)
-bones/8/position = Vector3(0.0022327, -0.00203213, -0.00507784)
-bones/8/rotation = Quaternion(0.982868, 0.178223, -0.00838289, -0.0462327)
-bones/9/rotation = Quaternion(0.0855395, -0.691913, 0.126332, 0.705676)
-bones/11/rotation = Quaternion(0.970999, 0.132974, 0.028465, 0.196643)
-bones/12/rotation = Quaternion(-0.0450941, -0.661032, -0.162254, 0.731216)
-bones/14/rotation = Quaternion(0.962242, -0.177317, 0.0351232, -0.203507)
-bones/15/rotation = Quaternion(-0.0957954, -0.702588, 0.0455039, 0.70365)
+bones/0/position = Vector3(0, -2.4559e-22, 0.00471322)
+bones/1/position = Vector3(6.67734e-06, 0.00621917, -6.29954e-22)
+bones/1/rotation = Quaternion(7.32588e-24, -1.05879e-23, -2.64698e-24, 1)
+bones/3/rotation = Quaternion(-0.000342247, 0.00221833, 0.0955093, 0.995426)
+bones/5/position = Vector3(0.00210945, -0.0021712, 0.00512165)
+bones/5/rotation = Quaternion(0.983651, 0.176522, 0.00629625, 0.0350857)
+bones/6/rotation = Quaternion(0.161255, -0.699048, 0.136601, 0.683132)
+bones/8/position = Vector3(-0.00128132, -0.0043622, -0.00507784)
+bones/8/rotation = Quaternion(0.988204, -0.145757, 0.00685613, -0.0464836)
+bones/9/rotation = Quaternion(0.0238842, -0.702336, 0.065759, 0.708399)
+bones/11/rotation = Quaternion(0.975172, -0.0977567, -0.0209258, 0.197601)
+bones/12/rotation = Quaternion(-0.0160013, -0.68949, -0.0958197, 0.717751)
+bones/14/rotation = Quaternion(0.974716, 0.0854788, -0.0169316, -0.205758)
+bones/15/rotation = Quaternion(-0.0366952, -0.692138, 0.0662535, 0.717781)
 
 [node name="Hitter" type="Area3D" parent="Direction" node_paths=PackedStringArray("controller")]
 unique_name_in_owner = true
@@ -126,6 +126,7 @@ shape = SubResource("SphereShape3D_8ejw0")
 [node name="Healthbar" parent="." instance=ExtResource("4_f0nob")]
 unique_name_in_owner = true
 transform = Transform3D(0.35, 0, 2.4869e-15, 0, 0.35, 0, -2.4869e-15, 0, 0.35, 0, 2.37812, 0)
+visible = false
 
 [node name="Hittable" type="Area3D" parent="."]
 collision_layer = 8
