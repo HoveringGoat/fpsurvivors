@@ -1,8 +1,8 @@
 [gd_scene load_steps=5 format=3 uid="uid://dejrh0kplo1ig"]
 
-[ext_resource type="Texture2D" path="res://assets/Textures/healthBarOutline.png" id="1_mggd0"]
+[ext_resource type="Texture2D" uid="uid://b8oq7ggtm70ri" path="res://textures/healthBarOutline.png" id="1_mggd0"]
 [ext_resource type="Script" path="res://Components/HealthBar/Healthbar.gd" id="2_61ueb"]
-[ext_resource type="Texture2D" path="res://assets/Textures/healthBar.png" id="3_mnnni"]
+[ext_resource type="Texture2D" uid="uid://bwwyiamiug33n" path="res://textures/healthBar.png" id="3_mnnni"]
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_pfsuw"]
 viewport_path = NodePath("SubViewport")

@@ -1,8 +1,7 @@
-[gd_scene load_steps=8 format=3 uid="uid://bktp724g4qk0m"]
+[gd_scene load_steps=7 format=3 uid="uid://bktp724g4qk0m"]
 
 [ext_resource type="Material" uid="uid://d3jqh4f5k2pmv" path="res://shaders/dungeonFloorMaterial.tres" id="1_8skgw"]
 [ext_resource type="Script" path="res://sky/dayTracker.gd" id="2_j7s58"]
-[ext_resource type="PackedScene" uid="uid://b3yxrxhh7hmyf" path="res://managers/spawnManager.tscn" id="2_vy3yc"]
 [ext_resource type="Material" uid="uid://dh6ykun8bv60u" path="res://sky/sky.tres" id="3_1o7ck"]
 
 [sub_resource type="Sky" id="Sky_ieg05"]
@@ -38,5 +37,3 @@ shadow_enabled = true
 transform = Transform3D(100, 0.0232594, 0.060145, -0.0232612, 100, 0.00342791, -0.0601443, -0.00343991, 100, 0, 0, 0)
 mesh = SubResource("PlaneMesh_1urrr")
 skeleton = NodePath("../..")
-
-[node name="SpawnManager" parent="." instance=ExtResource("2_vy3yc")]

@@ -24,6 +24,8 @@ func endGame():
 
 func _process(delta):
 	if isGameInProgress:
+		if spawnManager == null:
+			return
 		if lastDifficultyUpgradeTime == null:
 			lastDifficultyUpgradeTime = Time.get_ticks_msec()
 			return
