@@ -10,8 +10,8 @@ func _ready():
 	gameManager.players = %Players
 	multiplayerManager.become_host()
 	gameManager.loadWorld(worlds[0])
-	gameManager.isGameInProgress = false
-	pass # Replace with function body.
+	gameManager.isGameInProgress = true
+	#gameManager.isGameInProgress = false
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.

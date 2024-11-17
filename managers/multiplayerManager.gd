@@ -3,7 +3,7 @@ extends Node
 const SERVER_PORT = 10567
 const SERVER_IP = "127.0.0.1"
 
-var playerChar = preload("res://chars/player.tscn")
+var playerChar = preload("res://chars/player/player.tscn")
 
 var _players_spawn_node
 var host_mode_enabled = false

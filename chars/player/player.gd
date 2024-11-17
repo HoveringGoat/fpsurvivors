@@ -36,7 +36,7 @@ var cameraZoomMaxDistance = 6.5
 var cameraZoomSpeed = 2.5
 var cameraTargetPos = Vector3()
 var knockBacked = 0
-var knockBackTime = .2
+var knockBackTime = .5
 var isDead = false
 
 var isInvulnerable = false
@@ -73,8 +73,6 @@ func _ready():
 	# make childed camera the main camera
 	if multiplayer.get_unique_id() == player_id:
 		camera3D.make_current()
-		updateTargetCameraPosition(0)
-		camera3D.position = cameraTargetPos
 	# player char added is someone else
 		
 	if multiplayer.get_unique_id() != player_id and not multiplayer.is_server():
@@ -119,13 +117,14 @@ func _physics_process(delta):
 	
 	#  stuff to do if this is this players client
 	if multiplayer.get_unique_id() == player_id:
-		updateCamera(delta)
-		if cameraTargetPos != camera3D.position:
-			var diff = cameraTargetPos - camera3D.position 
-			if diff.length() < 0.01:
-				camera3D.position = cameraTargetPos
-			else:
-				camera3D.position += diff * 0.15
+		pass
+		#updateCamera(delta)
+		#if cameraTargetPos != camera3D.position:
+			#var diff = cameraTargetPos - camera3D.position 
+			#if diff.length() < 0.01:
+				#camera3D.position = cameraTargetPos
+			#else:
+				#camera3D.position += diff * 0.15
 
 # Method controlling which animations are playing  - Not used
 func updateAnimations():
@@ -196,7 +195,7 @@ func _apply_movement_from_input(delta):
 		motion.x = clamp(motion.x, maxX * -1,  maxX)
 		motion.y = clamp(motion.y, maxY * -1,  maxY)
 		
-	# handle knockback - Not used
+	# handle knockback
 	if knockBacked > 0:
 		var xzVel = Vector2(velocity.x, velocity.z)
 		motion = motion.lerp(xzVel, knockBacked)
@@ -266,20 +265,7 @@ func calculateStepProgress(delta):
 func forceStep(state: int):
 	nextStepProgress -= timeForAvgStep
 	footStepGenerator.step(state)
-	
-# method to adjust the camera to target camera postion - not used
-func updateCamera(delta):
-	if inputs.zoom != 0:
-		updateTargetCameraPosition(delta)
-	
-	
-# method to adjust the cameras target postion - also not used
-func updateTargetCameraPosition(delta):
-	zoomLevel += inputs.zoom * delta * cameraZoomSpeed
-	var offset = cameraZoomMaxDistance*zoomLevel*zoomLevel
-	var yOffset = abs(zoomLevel - 1) * 0.7 + .8
-	
-	cameraTargetPos = Vector3(0,offset+yOffset,offset)
+
 
 
 # hittable stuff. might replace/rewrite - not used
@@ -295,7 +281,7 @@ func _on_hittable_hit(hitter):
 	velocity.z = 0 
 	velocity -= diff.normalized() * hitter.knockbackForce
 	knockBacked = 1
-	takeDamage(hitter)
+	takeDamage(hitter.damage)
 
 # takes damage - not used
 func takeDamage(damage:int):

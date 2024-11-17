@@ -1,0 +1,42 @@
+[gd_scene load_steps=5 format=3 uid="uid://dejrh0kplo1ig"]
+
+[ext_resource type="Texture2D" path="res://assets/Textures/healthBarOutline.png" id="1_mggd0"]
+[ext_resource type="Script" path="res://Components/HealthBar/Healthbar.gd" id="2_61ueb"]
+[ext_resource type="Texture2D" path="res://assets/Textures/healthBar.png" id="3_mnnni"]
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_pfsuw"]
+viewport_path = NodePath("SubViewport")
+
+[node name="HealthBar" type="Node3D"]
+script = ExtResource("2_61ueb")
+healthyColor = Color(0.141176, 0.678431, 0.258824, 1)
+hurtColor = Color(1, 0, 0, 1)
+
+[node name="Sprite3D" type="Sprite3D" parent="."]
+billboard = 1
+no_depth_test = true
+texture = SubResource("ViewportTexture_pfsuw")
+
+[node name="SubViewport" type="SubViewport" parent="."]
+transparent_bg = true
+
+[node name="TextureProgressBar" type="TextureProgressBar" parent="SubViewport"]
+unique_name_in_owner = true
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -248.0
+offset_top = 203.0
+offset_right = 371.0
+offset_bottom = 257.0
+grow_horizontal = 2
+scale = Vector2(0.8, 1)
+size_flags_horizontal = 4
+value = 69.0
+rounded = true
+texture_under = ExtResource("3_mnnni")
+texture_over = ExtResource("1_mggd0")
+texture_progress = ExtResource("3_mnnni")
+tint_under = Color(0.18, 0.1278, 0.1278, 1)
+tint_over = Color(0.5135, 0.62725, 0.65, 1)
+tint_progress = Color(0.141176, 0.678431, 0.258824, 1)
