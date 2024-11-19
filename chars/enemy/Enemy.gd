@@ -6,7 +6,7 @@ extends CharacterBody3D
 var activeCharacter = 0
 @onready var animationTree: AnimationTree = %AnimationTree
 @onready var direction : Node3D = %Direction
-@onready var hitter : Hitter = %Hitter
+@onready var hitArea : HitSource = %HitArea
 @onready var healthBar: Node3D = %Healthbar
 @onready var collider: CollisionShape3D = %CollisionShape3D
 @onready var floorRayCast: RayCast3D = %FloorRayCast
@@ -132,7 +132,7 @@ func livingUpdate(delta):
 	if isAttacking:
 		if not attackPerformed and lastAttackTime + attackHitTime * 1000 < Time.get_ticks_msec():
 			# current attack hits
-			hitter.performHit()
+			hitArea.performHit()
 			attackPerformed = true
 			
 			
@@ -171,6 +171,8 @@ func livingUpdate(delta):
 		var motion = (Vector2.UP).rotated(direction.rotation.y*-1) * delta * adjustedSpeed
 		velocity.x = motion.x
 		velocity.z = motion.y
+	else:
+		currentAnimation = Animations.Idle
 		
 	calculateStepProgress(delta)
 	
@@ -231,7 +233,7 @@ func deathTimer():
 	# perform a queue free in a little bit after death anim plays
 	# remove colliders
 	currentAnimation = Animations.Death
-	hitter.queue_free()
+	hitArea.queue_free()
 	healthBar.queue_free()
 	
 	#spawnConsumables()
@@ -256,7 +258,8 @@ func spawnConsumables():
 # there is a "time per step" value and when that amount of time has been spent moving we "take a step"
 # running makes this time accumulate faster and crouching slower
 func calculateStepProgress(delta):
-	if velocity.length() == 0 or !isOnFloor:
+	var v =  velocity.length()
+	if velocity.length() < 1 or !isOnFloor:
 		return
 	var stepDelta = delta * 1000
 	var state = Enums.movementState.walking
@@ -272,18 +275,17 @@ func forceStep(state: int):
 	nextStepProgress -= timeForAvgStep
 	footStepGenerator.step(state)
 
-
-func _on_hittable_hit(hitter):
+func _on_hit_target_hit(hitSource):
 	# we are hit
 	#print("hit by %s" % hitter.controller.name)
 	# knockback
-	var diff = hitter.controller.position - position
+	var diff = hitSource.controller.position - position
 	velocity.x = 0 
 	velocity.z = 0 
-	velocity -= diff.normalized() * hitter.knockbackForce
+	velocity -= diff.normalized() * hitSource.knockbackForce
 	knockBacked = 1
-	takeDamage(hitter)
-	
-func takeDamage(hitter:Hitter):
-	health -= hitter.damage
+	takeDamage(hitSource)
+
+func takeDamage(hitSource:HitSource):
+	health -= hitSource.damage
 	# damage screen effects

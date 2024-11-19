@@ -266,24 +266,20 @@ func forceStep(state: int):
 	nextStepProgress -= timeForAvgStep
 	footStepGenerator.step(state)
 
-
-
-# hittable stuff. might replace/rewrite - not used
-func _on_hittable_hit(hitter):
-	# we are hit
-	print("hit by %s" % hitter.controller.name)
+func _on_hit_target_hit(hitSource):
+	print("hit by %s" % hitSource.controller.name)
 	if isInvulnerable:
 		print("invulnerable!")
 		return
 	# knockback
-	var diff = hitter.controller.position - position
+	var diff = hitSource.controller.position - position
 	velocity.x = 0 
 	velocity.z = 0 
-	velocity -= diff.normalized() * hitter.knockbackForce
+	velocity -= diff.normalized() * hitSource.knockbackForce
 	knockBacked = 1
-	takeDamage(hitter.damage)
+	takeDamage(hitSource)
 
 # takes damage - not used
-func takeDamage(damage:int):
-	health -= damage
+func takeDamage(hitSource:HitSource):
+	health -= hitSource.damage
 	# damage screen effects

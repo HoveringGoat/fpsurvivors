@@ -1,15 +1,17 @@
-[gd_scene load_steps=8 format=3 uid="uid://c4tj3ps6i8l3w"]
+[gd_scene load_steps=9 format=3 uid="uid://c4tj3ps6i8l3w"]
 
 [ext_resource type="Script" path="res://chars/player/player.gd" id="1_4efss"]
 [ext_resource type="Script" path="res://scripts/input.gd" id="2_demjr"]
-[ext_resource type="PackedScene" uid="uid://cvksjt4n8s5qw" path="res://Components/Footsteps/FootStepGenerator.tscn" id="3_u24m5"]
-[ext_resource type="PackedScene" uid="uid://bnu17xdgqx21q" path="res://Components/Hittable/Hittable.tscn" id="21_jqymd"]
+[ext_resource type="PackedScene" uid="uid://cvksjt4n8s5qw" path="res://components/Footsteps/FootStepGenerator.tscn" id="3_u24m5"]
+[ext_resource type="Script" path="res://components/Hits/HitTarget.gd" id="4_wfg0f"]
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_spxc6"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_8off7"]
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_0rr2k"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_coi8x"]
 
 [node name="Player" type="CharacterBody3D"]
 script = ExtResource("1_4efss")
@@ -64,13 +66,13 @@ unique_name_in_owner = true
 [node name="FootStepGenerator" parent="." instance=ExtResource("3_u24m5")]
 baseSoundLevel = -22.0
 
-[node name="Hittable" parent="." instance=ExtResource("21_jqymd")]
+[node name="HitTarget" type="Area3D" parent="."]
 collision_layer = 2
 collision_mask = 2
+script = ExtResource("4_wfg0f")
 
-[node name="CollisionShape3D" parent="Hittable" index="0"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="HitTarget"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+shape = SubResource("CapsuleShape3D_coi8x")
 
-[connection signal="hit" from="Hittable" to="." method="_on_hittable_hit"]
-
-[editable path="Hittable"]
+[connection signal="hit" from="HitTarget" to="." method="_on_hit_target_hit"]

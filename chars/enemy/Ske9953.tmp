@@ -1,11 +1,11 @@
-[gd_scene load_steps=19 format=3 uid="uid://6powm7ymtvo"]
+[gd_scene load_steps=18 format=3 uid="uid://6powm7ymtvo"]
 
 [ext_resource type="Script" path="res://chars/enemy/Enemy.gd" id="1_wm8q5"]
 [ext_resource type="PackedScene" uid="uid://dpjdgra0p6wu4" path="res://assets/monsters/Skeleton.fbx" id="2_5nqjt"]
 [ext_resource type="Script" path="res://components/Hits/HitArea.gd" id="3_mps82"]
 [ext_resource type="PackedScene" uid="uid://dejrh0kplo1ig" path="res://components/HealthBar/Healthbar.tscn" id="4_f0nob"]
 [ext_resource type="PackedScene" uid="uid://cvksjt4n8s5qw" path="res://components/Footsteps/FootStepGenerator.tscn" id="6_k2jki"]
-[ext_resource type="Script" path="res://components/Hits/HitTarget.gd" id="6_kew2p"]
+[ext_resource type="PackedScene" uid="uid://bvupewr8idy3d" path="res://components/Hits/HitTarget.tscn" id="6_pq1wa"]
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_h5370"]
 properties/0/path = NodePath(".:syncedPosition")
@@ -63,8 +63,6 @@ radius = 0.35
 [sub_resource type="SphereShape3D" id="SphereShape3D_8ejw0"]
 radius = 0.9
 
-[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_coi8x"]
-
 [node name="Skelly" type="CharacterBody3D"]
 script = ExtResource("1_wm8q5")
 
@@ -96,33 +94,27 @@ transform = Transform3D(-0.4, 0, -3.49691e-08, 0, 0.4, 0, 3.49691e-08, 0, -0.4, 
 transform = Transform3D(-1, 0, -1.50996e-07, 0, 1, 0, 1.50996e-07, 0, -1, 0, 0, 0)
 
 [node name="Skeleton3D" parent="Direction/RootNode/SkeletonArmature" index="0"]
-bones/0/position = Vector3(0, -3.43195e-22, 0.00464489)
-bones/1/position = Vector3(8.40174e-06, 0.00620796, -7.92639e-22)
+bones/0/position = Vector3(0, -3.46517e-22, 0.00444211)
+bones/1/position = Vector3(-5.2228e-22, 0.00626258, 0)
 bones/1/rotation = Quaternion(7.32588e-24, -1.05879e-23, -2.64698e-24, 1)
-bones/3/rotation = Quaternion(-0.00078143, 0.0220549, 0.0926769, 0.995452)
-bones/5/position = Vector3(0.00211931, -0.00210397, 0.00512165)
-bones/5/rotation = Quaternion(0.982286, 0.183965, 0.0065617, 0.035037)
-bones/6/rotation = Quaternion(0.15283, -0.700373, 0.128119, 0.685351)
-bones/8/position = Vector3(-0.00128958, -0.00426645, -0.00507784)
-bones/8/rotation = Quaternion(0.985874, -0.16076, 0.00756182, -0.046374)
-bones/9/rotation = Quaternion(0.0242165, -0.702287, 0.0661107, 0.708403)
-bones/11/rotation = Quaternion(0.973406, -0.114012, -0.0244055, 0.197196)
-bones/12/rotation = Quaternion(-0.00707013, -0.687793, -0.105811, 0.718119)
-bones/14/rotation = Quaternion(0.973085, 0.102373, -0.0202781, -0.205463)
-bones/15/rotation = Quaternion(-0.0484506, -0.691699, 0.0742647, 0.716722)
+bones/3/rotation = Quaternion(-0.000840094, 0.0223622, 0.0827419, 0.99632)
+bones/5/position = Vector3(-0.00170302, -0.00378967, 0.00512165)
+bones/5/rotation = Quaternion(0.962336, -0.269516, -0.00961328, 0.0343254)
+bones/6/rotation = Quaternion(0.105217, -0.705831, 0.0802253, 0.695913)
+bones/8/position = Vector3(0.00256046, -0.00282958, -0.00507784)
+bones/8/rotation = Quaternion(0.985819, 0.161103, -0.00757762, -0.0463715)
+bones/9/rotation = Quaternion(-0.00988938, -0.70602, 0.0314037, 0.707426)
+bones/11/rotation = Quaternion(0.962473, 0.184871, 0.039574, 0.194684)
+bones/12/rotation = Quaternion(-0.064826, -0.657231, -0.164027, 0.732762)
+bones/14/rotation = Quaternion(0.94937, -0.236685, 0.0468827, -0.201192)
+bones/15/rotation = Quaternion(-0.0230163, -0.682593, 0.100672, 0.723466)
 
-[node name="AnimationPlayer" parent="Direction" index="1"]
-speed_scale = 1.2
-
-[node name="HitArea" type="Area3D" parent="Direction" node_paths=PackedStringArray("controller")]
+[node name="HitArea" type="Area3D" parent="Direction"]
 unique_name_in_owner = true
 transform = Transform3D(-2.5, 0, 2.18557e-07, 0, 2.5, 0, -2.18557e-07, 0, -2.5, 0, 0, 0)
 collision_layer = 2
 collision_mask = 2
 script = ExtResource("3_mps82")
-controller = NodePath("../..")
-knockbackForce = 10.0
-damage = 1
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Direction/HitArea"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0.6)
@@ -139,15 +131,9 @@ target_position = Vector3(0, -0.01, 0)
 
 [node name="FootStepGenerator" parent="." instance=ExtResource("6_k2jki")]
 
-[node name="HitTarget" type="Area3D" parent="."]
+[node name="HitTarget" parent="." instance=ExtResource("6_pq1wa")]
 collision_layer = 8
 collision_mask = 8
-script = ExtResource("6_kew2p")
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="HitTarget"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
-shape = SubResource("CapsuleShape3D_coi8x")
-
-[connection signal="hit" from="HitTarget" to="." method="_on_hit_target_hit"]
 
 [editable path="Direction"]
+[editable path="HitTarget"]
